@@ -1,4 +1,4 @@
-function Test-TargetUserName {
+﻿function Test-TargetUserName {
     param(
         [AllowNull()]
         [AllowEmptyString()]
@@ -11,7 +11,7 @@ function Test-TargetUserName {
         return [PSCustomObject]@{
             IsValid = $false
             UserName = $normalizedUserName
-            Message = 'Please enter a username'
+            Message = '请输入用户名'
         }
     }
 
@@ -19,7 +19,7 @@ function Test-TargetUserName {
         return [PSCustomObject]@{
             IsValid = $false
             UserName = $normalizedUserName
-            Message = "Cannot enter your own username, use 'Current User' option instead"
+            Message = "不能输入自己的用户名，请改用'当前用户'选项"
         }
     }
 
@@ -27,13 +27,13 @@ function Test-TargetUserName {
         return [PSCustomObject]@{
             IsValid = $false
             UserName = $normalizedUserName
-            Message = 'User not found, please enter a valid username'
+            Message = '未找到用户，请输入有效的用户名'
         }
     }
 
     return [PSCustomObject]@{
         IsValid = $true
         UserName = $normalizedUserName
-        Message = "User found: $normalizedUserName"
+        Message = "已找到用户：$normalizedUserName"
     }
 }

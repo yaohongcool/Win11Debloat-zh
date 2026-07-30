@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Displays the modal progress window while selected changes are applied.
 
@@ -36,7 +36,7 @@ function Show-ApplyModal {
     }
     
     # Load XAML from file
-    $xaml = Get-Content -Path $script:ApplyChangesWindowSchema -Raw
+    $xaml = Get-Content -Path $script:ApplyChangesWindowSchema -Raw -Encoding UTF8
     $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xaml))
     try {
         $applyWindow = [System.Windows.Markup.XamlReader]::Load($reader)
@@ -74,8 +74,8 @@ function Show-ApplyModal {
     # Initialize in-progress state
     $script:ApplyInProgressPanel.Visibility = 'Visible'
     $script:ApplyCompletionPanel.Visibility = 'Collapsed'
-    $script:ApplyStepNameEl.Text = "Preparing..."
-    $script:ApplyStepCounterEl.Text = "Preparing..."
+    $script:ApplyStepNameEl.Text = "准备中..."
+    $script:ApplyStepCounterEl.Text = "准备中..."
     $script:ApplyProgressBarEl.Value = 0
     $script:ApplyModalInErrorState = $false
     
@@ -129,9 +129,9 @@ function Show-ApplyModal {
             
             Write-Host ""
             if ($script:CancelRequested) {
-                Write-Host "Script execution was cancelled by the user. Some changes may not have been applied."
+                Write-Host "脚本执行已被用户取消。部分更改可能未应用。"
             } elseif ($registryImportFailureCount -eq 0) {
-                Write-Host "All changes have been applied successfully!"
+                Write-Host "所有更改已成功应用！"
             }
             
             # Show completion state
@@ -142,15 +142,15 @@ function Show-ApplyModal {
             if ($script:CancelRequested) {
                 $script:ApplyCompletionIconEl.Text = [char]0xE7BA
                 $script:ApplyCompletionIconEl.Foreground = [System.Windows.Media.SolidColorBrush]::new([System.Windows.Media.ColorConverter]::ConvertFromString("#e8912d"))
-                $script:ApplyCompletionTitleEl.Text = "Cancelled"
-                $script:ApplyCompletionMessageEl.Text = "Script execution was cancelled by the user."
+                $script:ApplyCompletionTitleEl.Text = "已取消"
+                $script:ApplyCompletionMessageEl.Text = "脚本执行已被用户取消。"
             } elseif ($registryImportFailureCount -gt 0) {
                 $script:ApplyCompletionIconEl.Text = [char]0xE7BA
                 $script:ApplyCompletionIconEl.Foreground = [System.Windows.Media.SolidColorBrush]::new([System.Windows.Media.ColorConverter]::ConvertFromString("#e8912d"))
-                $script:ApplyCompletionTitleEl.Text = "Changes Applied with Errors"
-                $script:ApplyCompletionMessageEl.Text = "$registryImportFailureCount registry change(s) failed. See console for details."
+                $script:ApplyCompletionTitleEl.Text = "更改已应用，但有错误"
+                $script:ApplyCompletionMessageEl.Text = "$registryImportFailureCount 个注册表更改失败。查看控制台了解详情。"
             } else {
-                $script:ApplyCompletionTitleEl.Text = "Changes Applied"
+                $script:ApplyCompletionTitleEl.Text = "更改已应用"
 
                 # Show completion message with reboot instructions if any applied features require reboot
                 if ($InvokeRestartExplorer) {
@@ -169,20 +169,20 @@ function Show-ApplyModal {
                         $applyRebootPanel.Visibility = 'Visible'
                     }
                     else {
-                        $script:ApplyCompletionMessageEl.Text = "Your system is ready. Thanks for using Win11Debloat!"
+                        $script:ApplyCompletionMessageEl.Text = "系统已就绪。感谢使用 Win11Debloat！"
                     }
                 }
             }
             $applyWindow.Dispatcher.Invoke([System.Windows.Threading.DispatcherPriority]::Render, [action]{})
         }
         catch {
-            Write-Host "Error: $($_.Exception.Message)"
+            Write-Host "错误：$($_.Exception.Message)"
             $script:ApplyInProgressPanel.Visibility = 'Collapsed'
             $script:ApplyCompletionPanel.Visibility = 'Visible'
             $script:ApplyCompletionIconEl.Text = [char]0xEA39
             $script:ApplyCompletionIconEl.Foreground = [System.Windows.Media.SolidColorBrush]::new([System.Windows.Media.ColorConverter]::ConvertFromString("#c42b1c"))
-            $script:ApplyCompletionTitleEl.Text = "Error"
-            $script:ApplyCompletionMessageEl.Text = "An error occurred while applying changes: $($_.Exception.Message)"
+            $script:ApplyCompletionTitleEl.Text = "错误"
+            $script:ApplyCompletionMessageEl.Text = "应用更改时发生错误：$($_.Exception.Message)"
             
             # Set error state to change Kofi button to report link
             $script:ApplyModalInErrorState = $true
@@ -191,15 +191,15 @@ function Show-ApplyModal {
             $applyKofiBtn.Content = $null
             
             $reportText = [System.Windows.Controls.TextBlock]::new()
-            $reportText.Text = 'Report a bug'
+            $reportText.Text = '报告问题'
+
             $reportText.VerticalAlignment = 'Center'
             $reportText.FontSize = 14
             $reportText.Margin = [System.Windows.Thickness]::new(0, 0, 0, 1)
 
             $applyKofiBtn.Content = $reportText
             
-            [System.Windows.Automation.AutomationProperties]::SetName($applyKofiBtn, 'Report a bug')
-            
+            [System.Windows.Automation.AutomationProperties]::SetName($applyKofiBtn, '报告问题')
             $applyWindow.Dispatcher.Invoke([System.Windows.Threading.DispatcherPriority]::Render, [action]{})
         }
         finally {

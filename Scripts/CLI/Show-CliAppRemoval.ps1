@@ -1,13 +1,13 @@
-# Shows the CLI app removal menu and prompts the user to select which apps to remove.
+﻿# Shows the CLI app removal menu and prompts the user to select which apps to remove.
 function Show-CliAppRemoval {
     Write-CliHeader "App Removal"
 
-    Write-Output "> Opening app selection form..."
+    Write-Output "> 正在打开应用选择界面..."
 
     $result = Show-AppSelectionWindow
 
     if ($result -eq $true) {
-        Write-Output "You have selected $($script:SelectedApps.Count) apps for removal"
+        Write-Output "已选择 $($script:SelectedApps.Count) 个应用进行移除"
         Add-Parameter 'RemoveApps'
         Add-Parameter 'Apps' ($script:SelectedApps -join ',')
 
@@ -17,13 +17,13 @@ function Show-CliAppRemoval {
         if (-not $Silent) {
             Write-Output ""
             Write-Output ""
-            Write-Output "Press enter to remove the selected apps or press CTRL+C to quit..."
+            Write-Output "按 Enter 键移除所选应用，或按 CTRL+C 退出..."
             Read-Host | Out-Null
             Write-CliHeader "App Removal"
         }
     }
     else {
-        Write-Host "Selection was cancelled, no apps have been removed" -ForegroundColor Red
+        Write-Host "选择已取消，未移除任何应用" -ForegroundColor Red
         Write-Output ""
     }
 }

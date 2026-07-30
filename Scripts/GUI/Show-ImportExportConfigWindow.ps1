@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Shows a modal category-selection dialog for importing or exporting configuration.
 #>
@@ -39,7 +39,7 @@ function Show-ImportExportConfigWindow {
         return $null
     }
 
-    $xaml = Get-Content -Path $schemaPath -Raw
+    $xaml = Get-Content -Path $schemaPath -Raw -Encoding UTF8
     $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xaml))
     try {
         $dlg = [System.Windows.Markup.XamlReader]::Load($reader)

@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Displays the application-selection dialog and records the confirmed selections.
 
@@ -23,7 +23,7 @@ function Show-AppSelectionWindow {
     }
 
     # Load XAML from file
-    $xaml = Get-Content -Path $script:AppSelectionSchema -Raw
+    $xaml = Get-Content -Path $script:AppSelectionSchema -Raw -Encoding UTF8
     $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xaml))
     try {
         $window = [System.Windows.Markup.XamlReader]::Load($reader)

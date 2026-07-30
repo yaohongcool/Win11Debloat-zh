@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Imports valid application, tweak, and deployment selections from a configuration JSON file into active parameters.
 #>
@@ -15,20 +15,20 @@ function Import-ConfigToParams {
         $resolvedConfigPath = (Resolve-Path -LiteralPath $ConfigPath -ErrorAction Stop).Path
     }
     catch {
-        throw "Unable to find config file at path: $ConfigPath"
+        throw "在路径 $ConfigPath 找不到配置文件"
     }
 
     if (-not (Test-Path -LiteralPath $resolvedConfigPath -PathType Leaf)) {
-        throw "Provided config path is not a file: $resolvedConfigPath"
+        throw "提供的配置路径不是文件：$resolvedConfigPath"
     }
 
     if ([System.IO.Path]::GetExtension($resolvedConfigPath) -ne '.json') {
-        throw "Provided config file must be a .json file: $resolvedConfigPath"
+        throw "提供的配置文件必须是 .json 文件：$resolvedConfigPath"
     }
 
     $configJson = Import-JsonFile -filePath $resolvedConfigPath -expectedVersion $ExpectedVersion
     if ($null -eq $configJson) {
-        throw "Failed to read config file: $resolvedConfigPath"
+        throw "读取配置文件失败：$resolvedConfigPath"
     }
 
     $importedItems = 0
@@ -129,7 +129,7 @@ function Import-ConfigToParams {
     }
 
     if ($importedItems -eq 0) {
-        throw "The config file contains no importable data: $resolvedConfigPath"
+        throw "配置文件不包含可导入的数据：$resolvedConfigPath"
     }
 
     return $resolvedConfigPath

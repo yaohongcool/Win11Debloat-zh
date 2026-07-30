@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Shows the backup-restore dialog and performs the selected restore.
 #>
@@ -8,7 +8,7 @@ function Show-RestoreBackupWindow {
     )
 
     try {
-        Write-Host 'Opening restore backup dialog.'
+        Write-Host '正在打开还原备份对话框。'
 
         $restoreResult = [PSCustomObject]@{
             RestoredRegistry = $false
@@ -17,7 +17,7 @@ function Show-RestoreBackupWindow {
 
         $dialogResult = Show-RestoreBackupDialog -Owner $Owner
         if (-not $dialogResult -or $dialogResult.Result -eq 'Cancel') {
-            Write-Host 'Restore canceled by user.'
+            Write-Host '用户已取消还原。'
             return $restoreResult
         }
 
@@ -30,7 +30,7 @@ function Show-RestoreBackupWindow {
                 throw 'Registry backup restore requested without a selected backup.'
             }
 
-            Write-Host "User confirmed registry restore for $($backup.Target)."
+            Write-Host "用户已确认对 $($backup.Target) 的注册表还原。"
             $restoreOpResult = Restore-RegistryBackupState -Backup $backup
             if ($restoreOpResult -and $restoreOpResult.Result) {
                 $restoreResult.RestoredRegistry = $true
@@ -38,7 +38,7 @@ function Show-RestoreBackupWindow {
                     $successMessage = '[WhatIf] Registry backup would be restored (no changes made).'
                 }
                 else {
-                    $successMessage = 'Registry backup restored successfully. Some changes may require a restart to take effect.'
+                    $successMessage = '注册表备份还原成功。部分更改可能需要重启才能生效。'
                 }
             }
         }
@@ -54,7 +54,7 @@ function Show-RestoreBackupWindow {
             }
 
             if ($useManualBackupFile -and [string]::IsNullOrWhiteSpace($backupFilePath)) {
-                throw 'Start Menu restore canceled: no backup file selected.'
+                throw '开始菜单还原已取消：未选择备份文件。'
             }
 
             $result = if ($scope -eq 'AllUsers') {
@@ -70,22 +70,22 @@ function Show-RestoreBackupWindow {
 
             if ($successCount -eq 0) {
                 $errorSummary = ($resultEntries | ForEach-Object { $_.Message }) -join [Environment]::NewLine
-                throw "Failed to restore the Start Menu backup.`n$errorSummary"
+                throw "还原开始菜单备份失败。`n$errorSummary"
             }
 
             if ($failedEntries.Count -gt 0) {
                 $failureSummary = ($failedEntries | ForEach-Object { $_.Message }) -join [Environment]::NewLine
-                $warningMessage = "The Start Menu backup was successfully restored for $successCount user(s).`nSome users could not be restored:`n$failureSummary"
+                $warningMessage = "已为 $successCount 个用户成功还原开始菜单备份。`n部分用户无法还原：`n$failureSummary"
             }
             else {
                 if ($script:Params.ContainsKey("WhatIf")) {
                     $successMessage = '[WhatIf] Start Menu backup would be restored (no changes made).'
                 }
                 elseif ($scope -eq 'AllUsers') {
-                    $successMessage = "The Start Menu backup was successfully restored for all users. The changes will apply the next time users sign in."
+                    $successMessage = "已为所有用户成功还原开始菜单备份。更改将在用户下次登录时生效。"
                 }
                 else {
-                    $successMessage = "The Start Menu backup was successfully restored for the current user. The changes will apply the next time you sign in."
+                    $successMessage = "已为当前用户成功还原开始菜单备份。更改将在你下次登录时生效。"
                 }
             }
 
@@ -94,19 +94,19 @@ function Show-RestoreBackupWindow {
 
         if ($warningMessage) {
             Write-Host "$warningMessage"
-            Show-MessageBox -Title 'Backup Restored' -Message $warningMessage -Icon Warning
+            Show-MessageBox -Title '备份已还原' -Message $warningMessage -Icon Warning
         }
         elseif ($successMessage) {
             Write-Host "$successMessage"
-            Show-MessageBox -Title 'Backup Restored' -Message $successMessage -Icon Success
+            Show-MessageBox -Title '备份已还原' -Message $successMessage -Icon Success
         }
 
         return $restoreResult
     }
     catch {
-        $errorMessage = if ($_.Exception.Message) { $_.Exception.Message } else { 'An unexpected error occurred.' }
-        Write-Error "Restore operation failed: $errorMessage"
-        Show-MessageBox -Title 'Error' -Message "Restore failed: $errorMessage" -Icon Error
+        $errorMessage = if ($_.Exception.Message) { $_.Exception.Message } else { '发生意外错误。' }
+        Write-Error "还原操作失败：$errorMessage"
+        Show-MessageBox -Title '错误' -Message "还原失败：$errorMessage" -Icon Error
         return [PSCustomObject]@{
             RestoredRegistry = $false
             RestoredStartMenu = $false

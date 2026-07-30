@@ -1,13 +1,13 @@
-<#
+﻿<#
     .SYNOPSIS
         Returns preset names and application IDs from Apps.json, or an empty array when unavailable.
 #>
 function Import-AppPresetsFromJson {
     try {
-        $jsonContent = Get-Content -Path $script:AppsListFilePath -Raw | ConvertFrom-Json
+        $jsonContent = Get-Content -Path $script:AppsListFilePath -Raw -Encoding UTF8 | ConvertFrom-Json
     }
     catch {
-        Write-Warning "Failed to read Apps.json: $_"
+        Write-Warning "读取 Apps.json 失败：$_"
         return @()
     }
 

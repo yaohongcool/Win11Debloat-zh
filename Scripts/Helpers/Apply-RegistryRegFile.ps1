@@ -1,4 +1,4 @@
-function Get-NormalizedRegistryValueName {
+﻿function Get-NormalizedRegistryValueName {
     param(
         [AllowNull()]
         $ValueName
@@ -152,11 +152,11 @@ function Write-RegistryOperationAccessDeniedWarning {
     if ($operationType -eq 'SetValue' -or $operationType -eq 'DeleteValue') {
         $valueName = Get-NormalizedRegistryValueName -ValueName $Operation.ValueName
         $displayValueName = if ([string]::IsNullOrEmpty($valueName)) { '(Default)' } else { $valueName }
-        Write-Warning "Skipping operation '$operationType' on key '$keyPath' value '$displayValueName' due to access restrictions: $ExceptionMessage"
+        Write-Warning "由于访问限制，跳过对键'$keyPath'值'$displayValueName'的操作'$operationType'：$ExceptionMessage"
         return
     }
 
-    Write-Warning "Skipping operation '$operationType' on key '$keyPath' due to access restrictions: $ExceptionMessage"
+    Write-Warning "由于访问限制，跳过对键'$keyPath'的操作'$operationType'：$ExceptionMessage"
 }
 
 function Invoke-RegistryOperation {
@@ -217,10 +217,10 @@ function Invoke-RegistryOperationsFromRegFile {
     }
 
     if ($totalOperations -gt 0 -and $accessDeniedCount -eq $totalOperations) {
-        throw "Registry fallback import could not apply any operations in '$RegFilePath' because all $accessDeniedCount operation(s) were blocked by access restrictions."
+        throw "注册表回退导入无法在'$RegFilePath'中应用任何操作，因为所有 $accessDeniedCount 个操作均被访问限制阻止。"
     }
 
     if ($accessDeniedCount -gt 0) {
-        Write-Warning "Registry fallback import completed with $accessDeniedCount access-restricted operation(s) skipped in '$RegFilePath'."
+        Write-Warning "注册表回退导入已完成，在'$RegFilePath'中跳过了 $accessDeniedCount 个受访问限制的操作。"
     }
 }

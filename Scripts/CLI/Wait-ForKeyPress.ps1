@@ -1,8 +1,8 @@
-function Wait-ForKeyPress {
+﻿function Wait-ForKeyPress {
     # Suppress prompt if Silent parameter was passed
     if (-not $Silent) {
         Write-Output ""
-        Write-Output "Press any key to exit..."
+        Write-Output "按任意键退出..."
         $null = [System.Console]::ReadKey()
     }
 

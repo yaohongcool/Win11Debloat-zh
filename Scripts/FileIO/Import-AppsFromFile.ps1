@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Returns a list of app IDs from the specified JSON file.
 
@@ -26,7 +26,7 @@ function Import-AppsFromFile {
     }
 
     try {
-        $jsonContent = Get-Content -Path $appsFilePath -Raw | ConvertFrom-Json
+        $jsonContent = Get-Content -Path $appsFilePath -Raw -Encoding UTF8 | ConvertFrom-Json
         Foreach ($appData in $jsonContent.Apps) {
             # Handle AppId as array (could be single or multiple IDs)
             $appIdArray = if ($appData.AppId -is [array]) { $appData.AppId } else { @($appData.AppId) }
@@ -40,7 +40,7 @@ function Import-AppsFromFile {
         return $appsList
     } 
     catch {
-        Write-Error "Unable to read apps list from file: $appsFilePath"
+        Write-Error "无法从文件读取应用列表：$appsFilePath"
         Wait-ForKeyPress
     }
 }

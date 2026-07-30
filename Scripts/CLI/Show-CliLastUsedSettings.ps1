@@ -1,4 +1,4 @@
-# Shows the CLI last used settings from LastUsedSettings.json file, displays pending changes and prompts the user to apply them.
+﻿# Shows the CLI last used settings from LastUsedSettings.json file, displays pending changes and prompts the user to apply them.
 function Show-CliLastUsedSettings {
     Write-CliHeader 'Custom Mode'
 
@@ -6,7 +6,7 @@ function Show-CliLastUsedSettings {
         Import-Settings -filePath $script:SavedSettingsFilePath -expectedVersion "1.0"
     }
     catch {
-        Write-Error "Failed to load settings from LastUsedSettings.json file: $_"
+        Write-Error "从 LastUsedSettings.json 文件加载设置失败：$_"
         Wait-ForKeyPress
     }
 

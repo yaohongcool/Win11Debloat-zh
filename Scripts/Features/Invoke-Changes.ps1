@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Applies a single feature/debloat operation.
 
@@ -48,12 +48,12 @@ function Invoke-FeatureApply {
             $appsList = Generate-AppsList
 
             if ($appsList.Count -eq 0) {
-                Write-Host "No valid apps were selected for removal" -ForegroundColor Yellow
+                Write-Host "未选择要移除的有效应用" -ForegroundColor Yellow
                 Write-Host ""
                 return
             }
 
-            Write-Host "$($appsList.Count) apps selected for removal"
+            Write-Host "已选择 $($appsList.Count) 个应用进行移除"
             Remove-SelectedApps $appsList
             return
         }
@@ -367,7 +367,7 @@ function Invoke-AllChanges {
             Write-Host "[WhatIf] Create registry backup" -ForegroundColor Cyan
         }
         else {
-            Write-Host "> Creating registry backup..."
+            Write-Host "> 正在创建注册表备份..."
             try {
                 $undoSyntheticFeatures = @($undoIds | ForEach-Object {
                     $f = if ($script:Features.ContainsKey($_)) { $script:Features[$_] } else { $null }
@@ -378,7 +378,7 @@ function Invoke-AllChanges {
                 New-RegistrySettingsBackup -ActionableKeys $applyIds -ExtraFeatures $undoSyntheticFeatures | Out-Null
             }
             catch {
-                throw "Registry backup failed before applying changes. $($_.Exception.Message)"
+                throw "在应用更改前创建注册表备份失败。$($_.Exception.Message)"
             }
         }
     }
@@ -390,14 +390,14 @@ function Invoke-AllChanges {
         if ($script:CancelRequested) { return }
         $step++
         if ($script:ApplyProgressCallback) {
-            & $script:ApplyProgressCallback $step $totalSteps "Creating system restore point, this may take a moment..."
+            & $script:ApplyProgressCallback $step $totalSteps "正在创建系统还原点，这可能需要一点时间..."
         }
         if ($script:Params.ContainsKey("WhatIf")) {
             Write-Host "[WhatIf] Create system restore point" -ForegroundColor Cyan
             Write-Host ""
         }
         else {
-            Write-Host "> Creating a system restore point..."
+            Write-Host "> 正在创建系统还原点..."
             Invoke-SystemRestorePoint
             Write-Host ""
         }
@@ -426,7 +426,7 @@ function Invoke-AllChanges {
     # ================================================================
     if ($script:RegistryImportFailures -gt 0) {
         Write-Host ""
-        Write-Host "$($script:RegistryImportFailures) registry import change(s) failed. See output above for details." -ForegroundColor Yellow
+        Write-Host "$($script:RegistryImportFailures) 个注册表导入更改失败。请参见上方输出了解详情。" -ForegroundColor Yellow
     }
 }
 

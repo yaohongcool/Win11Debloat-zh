@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Displays the themed About dialog for the application.
 
@@ -31,7 +31,7 @@ function Show-AboutDialog {
     }
     
     # Load XAML from file
-    $xaml = Get-Content -Path $script:AboutWindowSchema -Raw
+    $xaml = Get-Content -Path $script:AboutWindowSchema -Raw -Encoding UTF8
     $reader = [System.Xml.XmlReader]::Create([System.IO.StringReader]::new($xaml))
     try {
         $aboutWindow = [System.Windows.Markup.XamlReader]::Load($reader)
